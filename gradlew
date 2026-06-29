@@ -23,7 +23,6 @@
 ##############################################################################
 
 # Attempt to set APP_HOME
-
 # Resolve links: $0 may be a link
 app_path=$0
 
@@ -81,20 +80,11 @@ if [ -n "$JAVA_HOME" ] ; then
         JAVACMD=$JAVA_HOME/bin/java
     fi
     if [ ! -x "$JAVACMD" ] ; then
-        die "ERROR: JAVA_HOME is set to an invalid directory: $JAVA_HOME
-
-Please set the JAVA_HOME variable in your environment to match the
-location of your Java installation."
+        die "ERROR: JAVA_HOME is set to an invalid directory: $JAVA_HOME"
     fi
 else
     JAVACMD=java
-    if ! command -v java >/dev/null 2>&1
-    then
-        die "ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
-
-Please set the JAVA_HOME variable in your environment to match the
-location of your Java installation."
-    fi
+    command -v java >/dev/null 2>&1 || die "ERROR: JAVA_HOME is not set and no 'java' command"
 fi
 
 # Increase the maximum file descriptors if we can.
@@ -112,59 +102,16 @@ if ! "$cygwin" && ! "$darwin" && ! "$nonstop" ; then
     esac
 fi
 
-# Collect all arguments for the java command, stacking in reverse order:
-#   * args from the command line
-#   * the main class name
-#   * -classpath
-#   * -D...appname settings
-#   * --module-path (only if needed)
-#   * DEFAULT_JVM_OPTS, JAVA_OPTS, and GRADLE_OPTS environment variables.
-
 # For Cygwin or MSYS, switch paths to Windows format before running java
 if "$cygwin" || "$msys" ; then
     APP_HOME=$( cygpath --path --mixed "$APP_HOME" )
     CLASSPATH=$( cygpath --path --mixed "$CLASSPATH" )
-
     JAVACMD=$( cygpath --unix "$JAVACMD" )
-
-    # Now convert the arguments - kludge to limit ourselves to /bin/sh
-    for arg do
-        if
-            case $arg in                                #(
-              -*)   false ;;                            # don't mess with options #(
-              /?*)  t=${arg#)}; t=/${t%%/*}             # looks like a POSIX filepath
-                    [ -e "$t" ] ;;                      #(
-              *)    false ;;
-            esac
-        then
-            arg=$( cygpath --path --ignore --mixed "$arg" )
-        fi
-        # Roll the args list around exactly as many times as the number of
-        # temporary variables used, so that the stack is returned to its start.
-        shift                   # remove old arg
-        set -- "$@" "$arg"      # push replacement arg
-    done
 fi
 
-
-# Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
-DEFAULT_JVM_OPTS=''
-
-# Collect all arguments for the java command:
-#   * DEFAULT_JVM_OPTS, JAVA_OPTS, GRADLE_OPTS, and opts environment variables
-#   * args from the command line
-
-set -- \
-        "-Dorg.gradle.appname=$APP_BASE_NAME" \
-        -classpath "$CLASSPATH" \
-        org.gradle.wrapper.GradleWrapperMain \
-        "$@"
-
-# Split up DEFAULT_JVM_OPTS, JAVA_OPTS and GRADLE_OPTS into separate words.
-# We cannot simply use 'for var in $DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS' because
-# items with spaces inside would not be handled correctly.
-# See https://github.com/gradle/gradle/issues/11632
-
-eval set -- $( printf "'%s' " $DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS ) '"$@"'
-
-exec "$JAVACMD" "$@"
+# Execute Gradle
+exec "$JAVACMD" \
+    -Dorg.gradle.appname="$APP_BASE_NAME" \
+    -classpath "$CLASSPATH" \
+    org.gradle.wrapper.GradleWrapperMain \
+    "$@"
